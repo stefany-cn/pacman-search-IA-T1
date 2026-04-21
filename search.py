@@ -88,8 +88,26 @@ def depthFirstSearch(problem):
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    Entrada: problem -> vem de searchAgents.py depois de ele receber um estado inicial e um estado objetivo. 
+             problem é uma instância de SearchProblem
+    Saída: lista de ações do tipo [NORTH, SOUTH, WEST, EAST] que leva ao objetivo
     """
-    "*** YOUR CODE HERE ***"
+    pilha = util.Stack()                                                # fila de estados a serem explorados
+    pilha.push((problem.getStartState(), []))                           # (estado, caminho)
+    visitados = set()                                                   # para evitar ciclos
+    while not pilha.isEmpty():
+        estado, caminho = pilha.pop()                                   # desempilha o estado e o caminho
+        if problem.isGoalState(estado):                                 # se for objetivo, retorna o caminho
+            return caminho
+        if estado not in visitados:                                     # se não foi visitado
+            visitados.add(estado)                                       # marca como visitado
+            for sucessor, acao, custo in problem.getSuccessors(estado): # para cada sucessor
+                if sucessor not in visitados:                           # se o sucessor não foi visitado
+                    pilha.push((sucessor, caminho + [acao]))            # empilha o sucessor e o caminho atualizado
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
