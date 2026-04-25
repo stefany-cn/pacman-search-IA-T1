@@ -88,18 +88,67 @@ def depthFirstSearch(problem):
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    Entrada: problem -> vem de searchAgents.py depois de ele receber um estado inicial e um estado objetivo. 
+             problem é uma instância de SearchProblem
+    Saída: lista de ações do tipo [NORTH, SOUTH, WEST, EAST] que leva ao objetivo
+
     """
-    "*** YOUR CODE HERE ***"
+    pilha = util.Stack()                                                # fila de estados a serem explorados
+    pilha.push((problem.getStartState(), []))                           # (estado, caminho)
+    visitados = set()                                                   # para evitar ciclos
+    while not pilha.isEmpty():
+        estado, caminho = pilha.pop()                                   # desempilha o estado e o caminho
+        if problem.isGoalState(estado):                                 # se for objetivo, retorna o caminho
+            return caminho
+        if estado not in visitados:                                     # se não foi visitado
+            visitados.add(estado)                                       # marca como visitado
+            for sucessor, acao, custo in problem.getSuccessors(estado): # para cada sucessor
+                if sucessor not in visitados:                           # se o sucessor não foi visitado
+                    pilha.push((sucessor, caminho + [acao]))            # empilha o sucessor e o caminho atualizado
+
     util.raiseNotDefined()
 
-def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+def breadthFirstSearch(problem): 
+
+    fila = util.Queue()                                                  # fila de estados a serem explorados
+    estado_inicial = problem.getStartState()
+    fila.push((estado_inicial, []))                                      # (estado, caminho)
+    visitados = set()                                                    # para evitar ciclos
+    visitados.add(estado_inicial)                                        # marca o estado inicial como visitado ao enfileirar
+    while not fila.isEmpty():
+        estado, caminho = fila.pop()                                     # desenfileira o estado e o caminho
+        if problem.isGoalState(estado):                                  # se for objetivo, retorna o caminho
+            return caminho
+        for sucessor, acao, _ in problem.getSuccessors(estado):          # para cada sucessor
+            if sucessor not in visitados:                                # se o sucessor não foi visitado
+                visitados.add(sucessor)                                  # marca como visitado ao enfileirar
+                fila.push((sucessor, caminho + [acao]))                  # enfileira o sucessor e o caminho atualizado
+    return []
+
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
+    """Search the node of least total cost first.
+    
+    Entrada: problem -> instância de SearchProblem
+    Saída: lista de ações do tipo [NORTH, SOUTH, WEST, EAST] que leva ao objetivo
+    """
+    
+    fila_prioridade = util.PriorityQueue()                                                      # fila de estados a serem explorados, ordenada por custo e devolve o menor custo no pop
+    fila_prioridade.push((problem.getStartState(), [], 0), 0)                                   # (estado, caminho, custo), prioridade = custo
+    visitados = set()                                                                           # para evitar ciclos
+    while not fila_prioridade.isEmpty():
+        estado, caminho, custo = fila_prioridade.pop()                                          # desempilha o estado, o caminho e o custo
+        if problem.isGoalState(estado):                                                         # se for objetivo, retorna o caminho
+            return caminho
+        if estado not in visitados:                                                             # se não foi visitado
+            visitados.add(estado)                                                               # marca como visitado
+            for sucessor, acao, passo_custo in problem.getSuccessors(estado):                   # para cada sucessor
+                if sucessor not in visitados:                                                   # se o sucessor não foi visitado
+                    novo_custo = custo + passo_custo                                            # calcula o novo custo
+                    fila_prioridade.push((sucessor, caminho + [acao], novo_custo), novo_custo)  # empilha o sucessor, o caminho atualizado e o novo custo, com prioridade igual ao novo custo
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -110,9 +159,28 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """Search the node that has the lowest combined cost and heuristic first.
+    
+    Entrada: problem -> instância de SearchProblem
+             heuristic -> função heurística
+    Saída: lista de ações do tipo [NORTH, SOUTH, WEST, EAST] que leva ao objetivo
+    
+    """
+    
+    fila_prioridade = util.PriorityQueue()                                                      # fila de estados a serem explorados, ordenada por custo e devolve o menor custo no pop
+    fila_prioridade.push((problem.getStartState(), [], 0), 0)                                   # (estado, caminho, custo), prioridade = custo
+    visitados = set()                                                                           # para evitar ciclos
+    while not fila_prioridade.isEmpty():
+        estado, caminho, custo = fila_prioridade.pop()                                          # desempilha o estado, o caminho e o custo
+        if problem.isGoalState(estado):                                                         # se for objetivo, retorna o caminho
+            return caminho
+        if estado not in visitados:                                                             # se não foi visitado
+            visitados.add(estado)                                                               # marca como visitado
+            for sucessor, acao, passo_custo in problem.getSuccessors(estado):                   # para cada sucessor
+                if sucessor not in visitados:                                                   # se o sucessor não foi visitado
+                    novo_custo = custo + passo_custo                                            # calcula o novo custo
+                    fila_prioridade.push((sucessor, caminho + [acao], novo_custo), 
+                                          novo_custo + heuristic(sucessor, problem))            # empilha o sucessor, o caminho atualizado e o novo custo, com prioridade igual ao novo custo + heurística
 
 
 # Abbreviations

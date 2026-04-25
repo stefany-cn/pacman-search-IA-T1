@@ -1,1 +1,13 @@
-__pycache__/
+modelo_relatorio_trabalho1.docx
+__pycache__/game.cpython-313.pyc
+__pycache__/ghostAgents.cpython-313.pyc
+__pycache__/graphicsDisplay.cpython-313.pyc
+__pycache__/graphicsUtils.cpython-313.pyc
+__pycache__/keyboardAgents.cpython-313.pyc
+__pycache__/layout.cpython-313.pyc
+__pycache__/pacman.cpython-313.pyc
+__pycache__/pacmanAgents.cpython-313.pyc
+__pycache__/search.cpython-313.pyc
+__pycache__/searchAgents.cpython-313.pyc
+__pycache__/util.cpython-313.pyc
+__pycache__/*
