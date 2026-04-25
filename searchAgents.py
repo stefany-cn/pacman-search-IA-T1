@@ -453,17 +453,20 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    
-    if len(foodGrid.asList()) < 2:                                                                                                          
-        return 0    
-    else:
-        distances = []  
-        for food in foodGrid.asList():
-            for food2 in foodGrid.asList():
+
+
+    if len(foodGrid.asList()) == 0:                                                                                  #  se a o grid possui 0 comidas então é o estado objetivo                                                                              
+        return 0     
+    elif len(foodGrid.asList()) == 1:                                                                                #  se o grid possui 1 comida então a heurística é a distância entre a posição atual e a comida            
+        return mazeDistance(position, foodGrid.asList()[0], problem.startingGameState)
+    else:                                                                                                            # senão a heurística é a distância entre a posição atual e a comida mais distante + a distância entre as comidas mais distantes
+        distances = []                                                                                                                           
+        for food in foodGrid.asList():                                                                               
+            for food2 in foodGrid.asList():                                                  
                 if food != food2:
-                    distances.append(((food[0] - food2[0]) ** 2 + (food[1] - food2[1]) ** 2) ** 0.5)
+                    distances.append(mazeDistance(food, food2, problem.startingGameState))                           # calcula a disntância entre todos os pares de comidas e armazena em uma lista             
         return (max(distances) 
-                + max([((position[0] - food[0]) ** 2 + (position[1] - food[1]) ** 2) ** 0.5 for food in foodGrid.asList()]))
+                + max([mazeDistance(position, food, problem.startingGameState) for food in foodGrid.asList()]))      # retorna a soma da distância entre as comidas mais distantes e a distância entre a posição atual e a comida mais distante
     
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
