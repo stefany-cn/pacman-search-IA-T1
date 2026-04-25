@@ -454,19 +454,10 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
 
-
-    if len(foodGrid.asList()) == 0:                                                                                  #  se a o grid possui 0 comidas então é o estado objetivo                                                                              
+    if len(foodGrid.asList()) == 0:                                                                              
         return 0     
-    elif len(foodGrid.asList()) == 1:                                                                                #  se o grid possui 1 comida então a heurística é a distância entre a posição atual e a comida            
-        return mazeDistance(position, foodGrid.asList()[0], problem.startingGameState)
-    else:                                                                                                            # senão a heurística é a distância entre a posição atual e a comida mais distante + a distância entre as comidas mais distantes
-        distances = []                                                                                                                           
-        for food in foodGrid.asList():                                                                               
-            for food2 in foodGrid.asList():                                                  
-                if food != food2:
-                    distances.append(mazeDistance(food, food2, problem.startingGameState))                           # calcula a disntância entre todos os pares de comidas e armazena em uma lista             
-        return (max(distances) 
-                + max([mazeDistance(position, food, problem.startingGameState) for food in foodGrid.asList()]))      # retorna a soma da distância entre as comidas mais distantes e a distância entre a posição atual e a comida mais distante
+    else:
+        return max([mazeDistance(position, food, problem.startingGameState) for food in foodGrid.asList()]) 
     
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
