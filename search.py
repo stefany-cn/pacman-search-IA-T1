@@ -110,10 +110,23 @@ def depthFirstSearch(problem):
 
     util.raiseNotDefined()
 
-def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+def breadthFirstSearch(problem): 
+
+    fila = util.Queue()                                                  # fila de estados a serem explorados
+    estado_inicial = problem.getStartState()
+    fila.push((estado_inicial, []))                                      # (estado, caminho)
+    visitados = set()                                                    # para evitar ciclos
+    visitados.add(estado_inicial)                                        # marca o estado inicial como visitado ao enfileirar
+    while not fila.isEmpty():
+        estado, caminho = fila.pop()                                     # desenfileira o estado e o caminho
+        if problem.isGoalState(estado):                                  # se for objetivo, retorna o caminho
+            return caminho
+        for sucessor, acao, _ in problem.getSuccessors(estado):          # para cada sucessor
+            if sucessor not in visitados:                                # se o sucessor não foi visitado
+                visitados.add(sucessor)                                  # marca como visitado ao enfileirar
+                fila.push((sucessor, caminho + [acao]))                  # enfileira o sucessor e o caminho atualizado
+    return []
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
