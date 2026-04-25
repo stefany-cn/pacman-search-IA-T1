@@ -34,6 +34,8 @@ description for details.
 Good luck and happy searching!
 """
 
+from math import dist
+
 from game import Directions
 from game import Agent
 from game import Actions
@@ -287,7 +289,7 @@ class CornersProblem(search.SearchProblem):
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
-        state = (self.startingPosition, (False, False, False, False))
+        self.startingGameState = startingGameState
 
     def getStartState(self):
         """
@@ -363,8 +365,21 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    cantos_visitados = state[1]
+    posicao_atual = state[0]
+    cantos_a_visitar = [corners[i] for i in range(4) if not cantos_visitados[i]]
+    dist_total = 0
+    distancias = []
+
+    # "Caxieiro viajante"
+    while cantos_a_visitar:
+        distancias = [(abs(posicao_atual[0] - canto[0]) + abs(posicao_atual[1] - canto[1]), canto) for canto in cantos_a_visitar]
+        dist_min, canto_mais_proximo = min(distancias)
+        dist_total += dist_min
+        posicao_atual = canto_mais_proximo
+        cantos_a_visitar.remove(canto_mais_proximo)
+    return dist_total
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
