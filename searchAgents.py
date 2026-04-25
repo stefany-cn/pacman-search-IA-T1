@@ -287,21 +287,23 @@ class CornersProblem(search.SearchProblem):
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
-        "*** YOUR CODE HERE ***"
+        state = (self.startingPosition, (False, False, False, False))
 
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        "*** YOUR CODE HERE ***"
+        cantos_visitados = tuple(self.startingPosition == canto for canto in self.corners)
+        return (self.startingPosition, cantos_visitados)
         util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
+        return all(state[1])
+
         util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -319,12 +321,14 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-
-            "*** YOUR CODE HERE ***"
+            x,y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                prox_pos = (nextx, nexty)
+                cantos_visitados = tuple(state[1][i] or (prox_pos == self.corners[i]) for i in range(4))
+                successors.append(((prox_pos, cantos_visitados), action, 1))         
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
