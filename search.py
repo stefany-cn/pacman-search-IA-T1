@@ -153,8 +153,21 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     Saída: lista de ações do tipo [NORTH, SOUTH, WEST, EAST] que leva ao objetivo
     
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    fila_prioridade = util.PriorityQueue()                                                      # fila de estados a serem explorados, ordenada por custo e devolve o menor custo no pop
+    fila_prioridade.push((problem.getStartState(), [], 0), 0)                                   # (estado, caminho, custo), prioridade = custo
+    visitados = set()                                                                           # para evitar ciclos
+    while not fila_prioridade.isEmpty():
+        estado, caminho, custo = fila_prioridade.pop()                                          # desempilha o estado, o caminho e o custo
+        if problem.isGoalState(estado):                                                         # se for objetivo, retorna o caminho
+            return caminho
+        if estado not in visitados:                                                             # se não foi visitado
+            visitados.add(estado)                                                               # marca como visitado
+            for sucessor, acao, passo_custo in problem.getSuccessors(estado):                   # para cada sucessor
+                if sucessor not in visitados:                                                   # se o sucessor não foi visitado
+                    novo_custo = custo + passo_custo                                            # calcula o novo custo
+                    fila_prioridade.push((sucessor, caminho + [acao], novo_custo), 
+                                          novo_custo + heuristic(sucessor, problem))            # empilha o sucessor, o caminho atualizado e o novo custo, com prioridade igual ao novo custo + heurística
 
 
 # Abbreviations
